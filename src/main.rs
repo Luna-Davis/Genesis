@@ -1,7 +1,7 @@
 mod cli;
 mod db;
 mod model;
-mod scarfold;
+mod scaffold;
 
 use crate::cli::Cli;
 
