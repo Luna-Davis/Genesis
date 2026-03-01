@@ -12,3 +12,4 @@ thiserror = "2.0.18"
 uuid = {version = "1.21.0", features = ["v4", "v7", "serde"]}
 clap = { version = "4", features = ["derive"] }
 toml = "1.0.3"
+git2 = "0.20.4"
