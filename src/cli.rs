@@ -1,10 +1,11 @@
-use std::str::FromStr;
 use std::env;
+use std::str::FromStr;
 
 use chrono::DateTime;
 use clap::{Parser, Subcommand};
 use uuid::Uuid;
 
+use crate::file_manager::task_selector;
 use crate::model::Languages;
 
 use crate::db::{Database, DbError};
@@ -18,7 +19,10 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    Start { name: String, language: String },
+    Start {
+        name: String,
+        language: String,
+    },
 
     Resume,
 
@@ -30,6 +34,14 @@ enum Commands {
         name: String,
         #[arg(long)]
         id: Option<String>,
+    },
+
+    New {
+        name: String,
+    },
+
+    Remove {
+        name: String,
     },
 }
 
@@ -128,6 +140,16 @@ impl Cli {
                     }
                     _ => Err(DbError::NotFound.into()),
                 }
+            }
+
+            Commands::New { name } => {
+                task_selector(crate::file_manager::Task::Create, &name)?;
+                Ok(())
+            }
+
+            Commands::Remove { name } => {
+                task_selector(crate::file_manager::Task::Delete, &name)?;
+                Ok(())
             }
         }
     }
