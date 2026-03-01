@@ -1,12 +1,14 @@
-use std::env;
 use std::str::FromStr;
+use std::env;
 
 use chrono::DateTime;
 use clap::{Parser, Subcommand};
+use uuid::Uuid;
 
 use crate::model::Languages;
 
 use crate::db::{Database, DbError};
+use crate::scaffold;
 
 #[derive(Parser)]
 pub struct Cli {
@@ -23,6 +25,12 @@ enum Commands {
     Stop,
 
     List,
+
+    Delete {
+        name: String,
+        #[arg(long)]
+        id: Option<String>,
+    },
 }
 
 impl Cli {
@@ -37,7 +45,10 @@ impl Cli {
                     .to_str()
                     .expect("Failed to convert to string hliteral");
                 let language = Languages::from_str(&language)?;
-                db.add_project(&name, language, location)?;
+                let id = Uuid::new_v4().to_string();
+
+                scaffold::selector(&id, name.clone(), &language)?;
+                db.add_project(&id, &name, language, location)?;
                 Ok(())
             }
             Commands::Resume => {
@@ -88,6 +99,35 @@ impl Cli {
                     println!("----------------");
                 }
                 Ok(())
+            }
+
+            Commands::Delete { name, id } => {
+                if let Some(id) = id {
+                    let projects = db.get_project(&id)?;
+                    let project = projects.first().ok_or(DbError::NotFound)?;
+                    db.delete_project(project)?;
+                    return Ok(());
+                }
+
+                let matches = db.get_project(&name)?;
+
+                match matches.len() {
+                    1 => {
+                        db.delete_project(&matches[0])?;
+                        Ok(())
+                    }
+                    n if n > 1 => {
+                        eprintln!("Multiple projects named '{name}' found. Re-run with --id <uuid> to delete a specific one:");
+                        for p in matches {
+                            eprintln!(
+                                "- id: {} | language: {} | location: {}",
+                                p.id, p.language, p.location
+                            );
+                        }
+                        Ok(())
+                    }
+                    _ => Err(DbError::NotFound.into()),
+                }
             }
         }
     }

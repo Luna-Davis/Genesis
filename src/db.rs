@@ -1,10 +1,10 @@
-use std::str::FromStr;
+use std::path::PathBuf;
+use std::{fs, str::FromStr};
 
 use chrono::Utc;
 use dirs::data_dir;
 use rusqlite::{Connection, Result as SqlResult};
 use thiserror::Error;
-use uuid::Uuid;
 
 use crate::model::{Languages, Status};
 
@@ -82,11 +82,11 @@ impl Database {
 
     pub fn add_project(
         &self,
+        id: &str,
         name: &str,
         language: Languages,
         location: &str,
-    ) -> Result<String, DbError> {
-        let id = Uuid::new_v4().to_string();
+    ) -> Result<(), DbError> {
         let now = Utc::now().timestamp();
 
         let language_str = format!("{:?}", language);
@@ -105,14 +105,22 @@ impl Database {
             )
             VALUES (?, ?, ?, ?, ?, ?, 0, 'New')
             "#,
-            (&id, name, language_str, location, now, now),
+            (id, name, language_str, location, now, now),
         )?;
 
-        Ok(id)
+        Ok(())
     }
 
-    pub fn delete_project(&self, id: &str) -> Result<(), DbError> {
-        let affected = self.conn.execute("DELETE FROM projects WHERE id=?", [id])?;
+    pub fn delete_project(&self, project: &Project) -> Result<(), DbError> {
+        let project_dir = resolve_project_dir(project);
+
+        if project_dir.exists() {
+            fs::remove_dir_all(&project_dir)?;
+        }
+
+        let affected = self
+            .conn
+            .execute("DELETE FROM projects WHERE id=?", [&project.id])?;
 
         if affected == 0 {
             return Err(DbError::NotFound);
@@ -145,20 +153,29 @@ impl Database {
         })
     }
 
-    pub fn get_project(&self, id: &str) -> Result<Project, DbError> {
-        let project = self.conn.query_row(
+    pub fn get_project(&self, id_or_name: &str) -> Result<Vec<Project>, DbError> {
+        let mut stmt = self.conn.prepare(
             r#"
             SELECT id, name, language, location,
                creation_date, last_active_date,
                is_lock, status
             FROM projects
-            WHERE id = ?
+            WHERE id = ?1 OR name = ?1
             "#,
-            [id],
-            |row| Database::row_to_project(row),
         )?;
 
-        Ok(project)
+        let rows = stmt.query_map([id_or_name], |row| Database::row_to_project(row))?;
+
+        let mut projects = Vec::new();
+        for row in rows {
+            projects.push(row?);
+        }
+
+        if projects.is_empty() {
+            return Err(DbError::NotFound);
+        }
+
+        Ok(projects)
     }
 
     pub fn list_projects(&self) -> Result<Vec<Project>, DbError> {
@@ -265,4 +282,15 @@ fn migrate(conn: &mut Connection) -> SqlResult<()> {
     }
 
     Ok(())
+}
+
+/// Determine the on-disk directory for a project.
+/// Falls back to `<location>/<name>` when `location` points to the parent directory.
+fn resolve_project_dir(project: &Project) -> PathBuf {
+    let base = PathBuf::from(&project.location);
+
+    match base.file_name() {
+        Some(name) if name.to_string_lossy() == project.name => base,
+        _ => base.join(&project.name),
+    }
 }
