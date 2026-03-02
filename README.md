@@ -40,12 +40,6 @@ genesis blueprint list
 genesis blueprint apply rust-service
 ```
 
-TUI:
-
-```bash
-genesis tui   # q or Esc to quit
-```
-
 ## Commands
 
 - `start <name> <language>`: scaffold (Rust/Python), git init, write `.genesis/config.toml`, register in SQLite, acquire lock.
