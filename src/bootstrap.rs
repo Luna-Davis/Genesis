@@ -6,7 +6,6 @@ use crate::run::start_spinner;
 use crate::scaffold::config::GenesisFile;
 use md5;
 #[cfg(unix)]
-use std::os::unix::process::ExitStatusExt;
 
 pub fn bootstrap(project_dir: &Path, cfg: &GenesisFile) -> Result<(), String> {
     match cfg.language {
