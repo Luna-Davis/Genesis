@@ -84,6 +84,12 @@
         <mxCell id="AEuanaLWgBmQk7WxNAqH-29" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=2;fillWeight=2;hachureGap=8;fillColor=#990000;fillStyle=dots;sketch=1;" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;STOP&lt;/font&gt;" vertex="1">
           <mxGeometry height="60" width="120" x="60" y="500" as="geometry" />
         </mxCell>
+        <mxCell id="eVLfRgVUoNAGWFqaZyG2-1" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=2;fillWeight=2;hachureGap=8;fillColor=#990000;fillStyle=dots;sketch=1;" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;START&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="140" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="eVLfRgVUoNAGWFqaZyG2-2" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" value="&lt;h3&gt;&lt;font style=&quot;font-size: 21px;&quot;&gt;Program flow (Creating new project)&lt;/font&gt;&lt;/h3&gt;" vertex="1">
+          <mxGeometry height="40" width="340" x="40" y="650" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>

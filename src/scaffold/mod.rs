@@ -1,8 +1,9 @@
 use crate::model::Languages;
 
-mod config;
+pub mod config;
 mod python;
 mod rust;
+pub mod version;
 
 pub fn selector(
     id: &str,

@@ -73,6 +73,7 @@ impl std::fmt::Display for Languages {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[allow(dead_code)]
 pub struct Session {
     pub id: Uuid,
     pub name: String,
@@ -80,6 +81,7 @@ pub struct Session {
     pub language: Languages,
     pub creation_date: DateTime<Utc>,
     pub last_active_date: DateTime<Utc>,
+    #[allow(dead_code)]
     pub is_lock: bool,
     pub status: Status,
 }

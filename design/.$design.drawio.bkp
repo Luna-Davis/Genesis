@@ -84,85 +84,11 @@
         <mxCell id="AEuanaLWgBmQk7WxNAqH-29" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=2;fillWeight=2;hachureGap=8;fillColor=#990000;fillStyle=dots;sketch=1;" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;STOP&lt;/font&gt;" vertex="1">
           <mxGeometry height="60" width="120" x="60" y="500" as="geometry" />
         </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-33" edge="1" parent="1" source="AEuanaLWgBmQk7WxNAqH-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="AEuanaLWgBmQk7WxNAqH-36" value="">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="eVLfRgVUoNAGWFqaZyG2-1" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=2;fillWeight=2;hachureGap=8;fillColor=#990000;fillStyle=dots;sketch=1;" value="" vertex="1">
+          <mxGeometry height="60" width="120" x="140" y="730" as="geometry" />
         </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-34" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=2;fillWeight=2;hachureGap=8;fillColor=#990000;fillStyle=dots;sketch=1;" value="&lt;span style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;START&lt;/font&gt;&lt;/span&gt;" vertex="1">
-          <mxGeometry height="60" width="120" x="60" y="90" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-35" edge="1" parent="1" source="AEuanaLWgBmQk7WxNAqH-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="AEuanaLWgBmQk7WxNAqH-39" value="">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-36" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#990000;strokeWidth=2;fillWeight=2;hachureGap=8;fillStyle=dots;sketch=1;" value="&lt;span style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Name, Language&lt;/font&gt;&lt;/span&gt;" vertex="1">
-          <mxGeometry height="60" width="120" x="60" y="180" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-37" edge="1" parent="1" source="AEuanaLWgBmQk7WxNAqH-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="AEuanaLWgBmQk7WxNAqH-41" value="">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-38" edge="1" parent="1" source="AEuanaLWgBmQk7WxNAqH-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="AEuanaLWgBmQk7WxNAqH-44" value="">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-39" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#990000;strokeWidth=2;fillWeight=2;hachureGap=8;fillStyle=dots;sketch=1;fontSize=12;textDirection=ltr;" value="&lt;span style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;If Lanugage == rust&lt;/font&gt;&lt;/span&gt;" vertex="1">
-          <mxGeometry height="80" width="80" x="80" y="290" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-40" edge="1" parent="1" source="AEuanaLWgBmQk7WxNAqH-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="AEuanaLWgBmQk7WxNAqH-57">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="280" y="490" />
-              <mxPoint x="120" y="490" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-41" parent="1" style="whiteSpace=wrap;html=1;fillColor=#990000;strokeWidth=2;fillWeight=2;hachureGap=8;fillStyle=dots;sketch=1;textDirection=ltr;" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;Call Python Scaffold&lt;/font&gt;" vertex="1">
-          <mxGeometry height="60" width="120" x="220" y="300" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-42" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="No" vertex="1">
-          <mxGeometry height="30" width="60" x="155" y="310" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-43" edge="1" parent="1" source="AEuanaLWgBmQk7WxNAqH-44" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="AEuanaLWgBmQk7WxNAqH-57">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-44" parent="1" style="whiteSpace=wrap;html=1;fillColor=#990000;strokeWidth=2;fillWeight=2;hachureGap=8;fillStyle=dots;sketch=1;textDirection=ltr;" value="&lt;span style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Call Rust Scaffold&lt;/font&gt;&lt;/span&gt;" vertex="1">
-          <mxGeometry height="60" width="120" x="60" y="410" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-45" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" value="Genesis Flowdiagram" vertex="1">
-          <mxGeometry height="40" width="240" x="320" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-46" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" value="Scaffold logic" vertex="1">
-          <mxGeometry height="40" width="100" x="60" y="40" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-47" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" value="Scaffold" vertex="1">
-          <mxGeometry height="40" width="100" x="610" y="40" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-48" edge="1" parent="1" source="AEuanaLWgBmQk7WxNAqH-49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="AEuanaLWgBmQk7WxNAqH-51" value="">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-49" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=2;fillWeight=2;hachureGap=8;fillColor=#990000;fillStyle=dots;sketch=1;" value="&lt;span style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;START&lt;/span&gt;" vertex="1">
-          <mxGeometry height="60" width="120" x="600" y="90" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-50" edge="1" parent="1" source="AEuanaLWgBmQk7WxNAqH-51" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="AEuanaLWgBmQk7WxNAqH-53" value="">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-51" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#990000;strokeWidth=2;fillWeight=2;hachureGap=8;fillStyle=dots;sketch=1;" value="&lt;font style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212)); color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Name&lt;/font&gt;" vertex="1">
-          <mxGeometry height="60" width="120" x="600" y="180" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-52" edge="1" parent="1" source="AEuanaLWgBmQk7WxNAqH-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="AEuanaLWgBmQk7WxNAqH-55" value="">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-53" parent="1" style="whiteSpace=wrap;html=1;fillColor=#990000;strokeWidth=2;fillWeight=2;hachureGap=8;fillStyle=dots;sketch=1;" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;Create project structure&lt;/font&gt;" vertex="1">
-          <mxGeometry height="60" width="120" x="600" y="270" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-54" edge="1" parent="1" source="AEuanaLWgBmQk7WxNAqH-55" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="AEuanaLWgBmQk7WxNAqH-56">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-55" parent="1" style="whiteSpace=wrap;html=1;fillColor=#990000;strokeWidth=2;fillWeight=2;hachureGap=8;fillStyle=dots;sketch=1;" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;Call genesis config&lt;/font&gt;" vertex="1">
-          <mxGeometry height="60" width="120" x="600" y="360" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-56" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=2;fillWeight=2;hachureGap=8;fillColor=#990000;fillStyle=dots;sketch=1;" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;STOP&lt;/font&gt;" vertex="1">
-          <mxGeometry height="60" width="120" x="600" y="460" as="geometry" />
-        </mxCell>
-        <mxCell id="AEuanaLWgBmQk7WxNAqH-57" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeWidth=2;fillWeight=2;hachureGap=8;fillColor=#990000;fillStyle=dots;sketch=1;" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;STOP&lt;/font&gt;" vertex="1">
-          <mxGeometry height="60" width="120" x="60" y="500" as="geometry" />
+        <mxCell id="eVLfRgVUoNAGWFqaZyG2-2" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" value="&lt;h3&gt;&lt;font style=&quot;font-size: 21px;&quot;&gt;Program flow (Creating new project)&lt;/font&gt;&lt;/h3&gt;" vertex="1">
+          <mxGeometry height="40" width="340" x="40" y="650" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

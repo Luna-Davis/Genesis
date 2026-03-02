@@ -1,0 +1,14 @@
+/home/davis/Creations/Genesis/src/bundler/bootloader/target/release/deps/thiserror-c0c3a464e992f448.d: /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/lib.rs /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/aserror.rs /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/display.rs /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/var.rs /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/private.rs /home/davis/Creations/Genesis/src/bundler/bootloader/target/release/build/thiserror-693d6698d04547a2/out/private.rs
+
+/home/davis/Creations/Genesis/src/bundler/bootloader/target/release/deps/libthiserror-c0c3a464e992f448.rlib: /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/lib.rs /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/aserror.rs /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/display.rs /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/var.rs /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/private.rs /home/davis/Creations/Genesis/src/bundler/bootloader/target/release/build/thiserror-693d6698d04547a2/out/private.rs
+
+/home/davis/Creations/Genesis/src/bundler/bootloader/target/release/deps/libthiserror-c0c3a464e992f448.rmeta: /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/lib.rs /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/aserror.rs /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/display.rs /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/var.rs /home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/private.rs /home/davis/Creations/Genesis/src/bundler/bootloader/target/release/build/thiserror-693d6698d04547a2/out/private.rs
+
+/home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/lib.rs:
+/home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/aserror.rs:
+/home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/display.rs:
+/home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/var.rs:
+/home/davis/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/private.rs:
+/home/davis/Creations/Genesis/src/bundler/bootloader/target/release/build/thiserror-693d6698d04547a2/out/private.rs:
+
+# env-dep:OUT_DIR=/home/davis/Creations/Genesis/src/bundler/bootloader/target/release/build/thiserror-693d6698d04547a2/out

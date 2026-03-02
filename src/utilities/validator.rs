@@ -1,13 +1,14 @@
 use std::env;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-pub fn validator() -> bool {
-    let current_dir = match env::current_dir() {
-        Ok(dir) => dir,
-        Err(_) => return false,
-    };
+pub fn validator() -> Option<PathBuf> {
+    let current_dir = env::current_dir().ok()?;
 
     let genesis_dir = Path::new(&current_dir).join(".genesis");
 
-    genesis_dir.exists() && genesis_dir.is_dir()
+    if genesis_dir.exists() && genesis_dir.is_dir() {
+        Some(current_dir)
+    } else {
+        None
+    }
 }

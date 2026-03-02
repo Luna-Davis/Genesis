@@ -25,6 +25,7 @@ pub struct Project {
     pub location: String,
     pub creation_date: i64,
     pub last_active_date: i64,
+    #[allow(dead_code)]
     pub is_lock: bool,
     pub status: Status,
 }
@@ -112,6 +113,8 @@ impl Database {
     }
 
     pub fn delete_project(&self, project: &Project) -> Result<(), DbError> {
+        validate_project_dir(project)?;
+
         let project_dir = resolve_project_dir(project);
 
         if project_dir.exists() {
@@ -237,8 +240,10 @@ impl Database {
             [now],
         )?;
 
+        // If nothing was locked, treat as a no-op instead of bubbling an error.
         if affected == 0 {
-            return Err(DbError::NotFound);
+            tx.commit()?;
+            return Ok(());
         }
 
         tx.commit()?;
@@ -292,5 +297,115 @@ fn resolve_project_dir(project: &Project) -> PathBuf {
     match base.file_name() {
         Some(name) if name.to_string_lossy() == project.name => base,
         _ => base.join(&project.name),
+    }
+}
+
+/// Ensure the project directory looks like a Genesis-managed project and matches the DB record.
+fn validate_project_dir(project: &Project) -> Result<(), DbError> {
+    let dir = resolve_project_dir(project);
+    let config_path = dir.join(".genesis").join("config.toml");
+
+    if !config_path.exists() {
+        return Err(DbError::Io(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            "Missing .genesis/config.toml in project directory",
+        )));
+    }
+
+    let contents = fs::read_to_string(&config_path)?;
+    let cfg: crate::scaffold::config::GenesisFile = toml::from_str(&contents)
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
+        .map_err(DbError::Io)?;
+
+    if cfg.id != project.id {
+        return Err(DbError::Io(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Project ID mismatch between DB and .genesis/config.toml",
+        )));
+    }
+
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::scaffold::config::{GenesisConfig, GenesisFile};
+    use std::fs;
+
+    fn temp_project(name: &str) -> (Project, PathBuf) {
+        let root = std::env::temp_dir().join(format!("genesis-test-{}", name));
+        let _ = fs::remove_dir_all(&root);
+        fs::create_dir_all(root.join(".genesis")).unwrap();
+
+        let project = Project {
+            id: "id-123".into(),
+            name: name.into(),
+            language: Languages::Rust,
+            location: root.to_string_lossy().to_string(),
+            creation_date: 0,
+            last_active_date: 0,
+            is_lock: false,
+            status: Status::New,
+        };
+        (project, root)
+    }
+
+    #[test]
+    fn resolve_uses_name_when_location_is_parent() {
+        let mut project = Project {
+            id: "id-1".into(),
+            name: "proj".into(),
+            language: Languages::Rust,
+            location: "/tmp".into(),
+            creation_date: 0,
+            last_active_date: 0,
+            is_lock: false,
+            status: Status::New,
+        };
+        let path = resolve_project_dir(&project);
+        assert!(path.ends_with("proj"));
+
+        project.location = "/tmp/proj".into();
+        let path2 = resolve_project_dir(&project);
+        assert!(path2.ends_with("proj"));
+    }
+
+    #[test]
+    fn validate_checks_id_in_config() {
+        let (project, root) = temp_project("validate-ok");
+        let cfg = GenesisFile {
+            id: project.id.clone(),
+            name: project.name.clone(),
+            language: project.language.clone(),
+            location: project.location.clone(),
+            created_at: 0,
+            version: "0.1.0".into(),
+            scripts: std::collections::HashMap::new(),
+        };
+        GenesisConfig::write_existing(&cfg, &root).unwrap();
+        assert!(validate_project_dir(&project).is_ok());
+    }
+
+    #[test]
+    fn validate_rejects_mismatched_id() {
+        let (mut project, root) = temp_project("validate-bad");
+        let mut cfg = GenesisFile {
+            id: "other".into(),
+            name: project.name.clone(),
+            language: project.language.clone(),
+            location: project.location.clone(),
+            created_at: 0,
+            version: "0.1.0".into(),
+            scripts: std::collections::HashMap::new(),
+        };
+        GenesisConfig::write_existing(&cfg, &root).unwrap();
+        let res = validate_project_dir(&project);
+        assert!(res.is_err());
+
+        // fix and validate
+        cfg.id = project.id.clone();
+        GenesisConfig::write_existing(&cfg, &root).unwrap();
+        assert!(validate_project_dir(&project).is_ok());
     }
 }
