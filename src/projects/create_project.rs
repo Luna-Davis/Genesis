@@ -8,6 +8,7 @@ use dialoguer::{Confirm, Input, Select};
 use dirs;
 
 use crate::errors::CreationErrors::{self, LanguageNotSupported, ProjectCreationError};
+use crate::marker::{GenesisMarker, read_manifest_version};
 
 static LANGUAGES: LazyLock<Vec<String>> =
     LazyLock::new(|| vec!["Rust".to_string(), "Python".to_string()]);
@@ -27,16 +28,39 @@ impl Project {
         }
     }
 
+    fn create_marker(&self) -> Result<(), CreationErrors> {
+        let project_dir = std::env::current_dir()
+            .map_err(|e| ProjectCreationError(e.to_string()))?
+            .join(self.name.to_lowercase());
+
+        let language = self.language.to_lowercase();
+        let manifest = project_dir.join(if language == "python" {
+            "pyproject.toml"
+        } else {
+            "Cargo.toml"
+        });
+        let version = read_manifest_version(&manifest);
+
+        let marker = GenesisMarker::new(self.name.clone(), language, version);
+        marker
+            .create(&project_dir)
+            .map_err(|e| ProjectCreationError(e.to_string()))?;
+
+        println!("Genesis marker file created");
+        Ok(())
+    }
+
     fn create(&self) -> Result<(), CreationErrors> {
         if self.language.to_lowercase() == "python" {
             let result = Command::new("uv")
                 .arg("init")
                 .arg(self.name.to_lowercase())
                 .output()
-                .unwrap();
+                .map_err(|e| ProjectCreationError(e.to_string()))?;
 
             if result.status.success() {
                 println!("Project created successfully");
+                self.create_marker()?;
             } else {
                 return Err(ProjectCreationError(
                     String::from_utf8_lossy(&result.stderr).to_string(),
@@ -51,6 +75,7 @@ impl Project {
 
             if result.status.success() {
                 println!("Project created successfully at {:?}", self.path);
+                self.create_marker()?;
             } else {
                 return Err(ProjectCreationError(
                     String::from_utf8_lossy(&result.stderr).to_string(),
@@ -63,24 +88,24 @@ impl Project {
     }
 }
 
-pub fn create_project() {
+pub fn create_project() -> Result<(), CreationErrors> {
     let project_name: String = Input::new()
         .with_prompt("Project Name")
         .interact_text()
-        .unwrap();
+        .map_err(|e| ProjectCreationError(e.to_string()))?;
 
     let language = Select::new()
         .with_prompt("Select Project Language")
         .items(LANGUAGES.iter().to_owned())
         .interact()
-        .unwrap();
+        .map_err(|e| ProjectCreationError(e.to_string()))?;
 
     let projects_dir = dirs::home_dir().unwrap().as_path().join("projects");
     let path: String = Input::new()
         .with_prompt("Enter Path for {project_name}")
         .default(projects_dir.to_string_lossy().to_string())
         .interact_text()
-        .unwrap();
+        .map_err(|e| ProjectCreationError(e.to_string()))?;
 
     let project = Project::new(
         project_name,
@@ -91,11 +116,12 @@ pub fn create_project() {
     let confirmation = Confirm::new()
         .with_prompt("Do you want to create project?")
         .interact()
-        .unwrap();
+        .map_err(|e| ProjectCreationError(e.to_string()))?;
 
     if confirmation {
         let _ = project.create(); // Don't require the output
     } else {
         println!("Exiting...");
     }
+    Ok(())
 }

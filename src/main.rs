@@ -2,14 +2,17 @@ mod command_handler;
 mod errors;
 mod projects;
 mod shell;
+mod marker;
 
 use anyhow::Result;
 use clap::Command;
 
+use crate::errors::InitializationErrors;
+use crate::errors::InitializationErrors::{NoCommandProvided, ProjectInitializationError};
 use crate::projects::{create_project, initialize_project};
 use shell::shell;
 
-fn main() -> Result<()> {
+fn main() -> Result<(), InitializationErrors> {
     let matches = Command::new("Genesis")
         .author("Mr. Lunatic")
         .version("1.0.0")
@@ -19,14 +22,14 @@ fn main() -> Result<()> {
         .subcommand(Command::new("shell").about("Genesis shell"))
         .get_matches();
 
-    match matches.subcommand() {
+    let _ = match matches.subcommand() {
         Some(("new", _)) => create_project(),
-        Some(("init", _)) => {
-            initialize_project().expect("Internal Error, Could not initialize project")
-        }
-        Some(("shell", _)) => shell(),
-        _ => println!("No command provided. Use --help to display help"),
-    }
+        Some(("init", _)) => Ok({
+            initialize_project().map_err(|e| ProjectInitializationError(e.to_string()))?;
+        }),
+        Some(("shell", _)) => Ok(shell()),
+        _ => return Err(NoCommandProvided.into()),
+    };
 
     Ok(())
 }

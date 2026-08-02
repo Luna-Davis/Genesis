@@ -19,6 +19,9 @@ pub enum InitializationErrors {
 
     #[error("Walkdir error: {0}")]
     WalkDirError(#[from] walkdir::Error),
+
+    #[error("No command provided. Use --help to display help")]
+    NoCommandProvided,
 }
 
 #[derive(Error, Debug)]

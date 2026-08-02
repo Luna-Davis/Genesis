@@ -1,17 +1,15 @@
 use std::{
     path::{Path, PathBuf, absolute},
-    process::Command,
 };
 
-use anyhow::Result;
-use dialoguer::Input;
+use dialoguer::{Input, Select};
 use walkdir::WalkDir;
 
 use crate::errors::InitializationErrors::{self, ProjectInitializationError};
+use crate::marker::{GenesisMarker, read_manifest_version};
 
 pub fn initialize_project() -> Result<(), InitializationErrors> {
     // initializes an already existing project using genesis
-    // TODO Add genesis meta file
     let path: String = Input::new()
         .with_prompt("Enter Path")
         .interact_text()
@@ -23,53 +21,53 @@ pub fn initialize_project() -> Result<(), InitializationErrors> {
         absolute(Path::new(&path))
     }?;
 
-    let walker = WalkDir::new(&project_path).max_depth(2);
-
-    for entry in walker {
+    let mut detected: Option<(&str, PathBuf)> = None;
+    for entry in WalkDir::new(&project_path).max_depth(2) {
         let entry = entry?;
-        let name = entry.file_name();
-        match name.to_str() {
-            Some("Cargo.toml") => initialize_rust(project_path.clone())?,
-            Some("pyproject.toml") => initialize_python(project_path.clone())?,
+        match entry.file_name().to_str() {
+            Some("Cargo.toml") => detected = Some(("rust", entry.path().to_path_buf())),
+            Some("pyproject.toml") => detected = Some(("python", entry.path().to_path_buf())),
             _ => {}
         }
     }
 
-    Ok(())
+    let (language, manifest) = match detected {
+        Some((lang, manifest)) => (lang.to_string(), Some(manifest)),
+        None => {
+            let languages = ["Rust", "Python"];
+            let selection = Select::new()
+                .with_prompt("No project manifest detected. Select project language")
+                .items(&languages)
+                .interact()
+                .unwrap();
+            (languages[selection].to_lowercase(), None)
+        }
+    };
+
+    create_marker(&project_path, &language, manifest.as_deref())
 }
 
-fn initialize_rust(path: PathBuf) -> Result<(), InitializationErrors> {
-    // Initializes a rust project using cargo to the path provided
-    let result = Command::new("cargo")
-        .arg("init")
-        .arg(&path)
-        .output()
+fn create_marker(
+    project_path: &Path,
+    language: &str,
+    manifest: Option<&Path>,
+) -> Result<(), InitializationErrors> {
+    let name = project_path
+        .file_name()
+        .and_then(|n| n.to_str())
+        .unwrap_or("project")
+        .to_string();
+
+    let version = match manifest {
+        Some(manifest) => read_manifest_version(manifest),
+        None => "0.1.0".to_string(),
+    };
+
+    let marker = GenesisMarker::new(name, language.to_string(), version);
+    marker
+        .create(project_path)
         .map_err(|e| ProjectInitializationError(e.to_string()))?;
 
-    if result.status.success() {
-        println!("{:?} has been initialized successfully", &path);
-    } else {
-        return Err(ProjectInitializationError(
-            path.to_string_lossy().to_string(),
-        ));
-    }
-    Ok(())
-}
-
-fn initialize_python(path: PathBuf) -> Result<(), InitializationErrors> {
-    // Initializes a python project using uv to the path provided
-    let result = Command::new("uv")
-        .arg("init")
-        .arg(&path)
-        .output()
-        .map_err(|e| ProjectInitializationError(e.to_string()))?;
-
-    if result.status.success() {
-        println!("{:?} has been initialized successfully", &path);
-    } else {
-        return Err(ProjectInitializationError(
-            path.to_string_lossy().to_string(),
-        ));
-    }
+    println!("Genesis marker file created");
     Ok(())
 }
