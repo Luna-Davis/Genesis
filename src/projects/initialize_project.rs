@@ -10,15 +10,18 @@ use crate::marker::{GenesisMarker, read_manifest_version};
 
 pub fn initialize_project() -> Result<(), InitializationErrors> {
     // initializes an already existing project using genesis
+    let default_path = std::env::current_dir()?;
     let path: String = Input::new()
         .with_prompt("Enter Path")
+        .default(default_path.to_string_lossy().to_string())
         .interact_text()
         .unwrap();
 
-    let project_path = if path.as_str() == "." {
+    let path = path.trim();
+    let project_path = if path.is_empty() || path == "." {
         std::env::current_dir()
     } else {
-        absolute(Path::new(&path))
+        absolute(Path::new(path))
     }?;
 
     let mut detected: Option<(&str, PathBuf)> = None;
