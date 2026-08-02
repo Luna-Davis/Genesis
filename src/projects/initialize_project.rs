@@ -22,11 +22,14 @@ pub fn initialize_project() -> Result<(), InitializationErrors> {
     }?;
 
     let mut detected: Option<(&str, PathBuf)> = None;
+    // Walks through the project directory looking for a manifest to determine
+    // the language of the project
     for entry in WalkDir::new(&project_path).max_depth(2) {
         let entry = entry?;
         match entry.file_name().to_str() {
             Some("Cargo.toml") => detected = Some(("rust", entry.path().to_path_buf())),
             Some("pyproject.toml") => detected = Some(("python", entry.path().to_path_buf())),
+            Some("pubspec.yaml") => detected = Some(("flutter", entry.path().to_path_buf())),
             _ => {}
         }
     }
@@ -34,7 +37,8 @@ pub fn initialize_project() -> Result<(), InitializationErrors> {
     let (language, manifest) = match detected {
         Some((lang, manifest)) => (lang.to_string(), Some(manifest)),
         None => {
-            let languages = ["Rust", "Python"];
+            // No manifest found, ask the user which language the project uses
+            let languages = ["Rust", "Python", "Flutter"];
             let selection = Select::new()
                 .with_prompt("No project manifest detected. Select project language")
                 .items(&languages)
@@ -52,6 +56,7 @@ fn create_marker(
     language: &str,
     manifest: Option<&Path>,
 ) -> Result<(), InitializationErrors> {
+    // Writes the marker file into the project root
     let name = project_path
         .file_name()
         .and_then(|n| n.to_str())

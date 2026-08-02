@@ -10,8 +10,13 @@ use dirs;
 use crate::errors::CreationErrors::{self, LanguageNotSupported, ProjectCreationError};
 use crate::marker::{GenesisMarker, read_manifest_version};
 
-static LANGUAGES: LazyLock<Vec<String>> =
-    LazyLock::new(|| vec!["Rust".to_string(), "Python".to_string()]);
+static LANGUAGES: LazyLock<Vec<String>> = LazyLock::new(|| {
+    vec![
+        "Rust".to_string(),
+        "Python".to_string(),
+        "Flutter".to_string(),
+    ]
+});
 
 struct Project {
     name: String,
@@ -29,15 +34,16 @@ impl Project {
     }
 
     fn create_marker(&self) -> Result<(), CreationErrors> {
+        // Writes the marker file into the created project directory
         let project_dir = std::env::current_dir()
             .map_err(|e| ProjectCreationError(e.to_string()))?
             .join(self.name.to_lowercase());
 
         let language = self.language.to_lowercase();
-        let manifest = project_dir.join(if language == "python" {
-            "pyproject.toml"
-        } else {
-            "Cargo.toml"
+        let manifest = project_dir.join(match language.as_str() {
+            "python" => "pyproject.toml",
+            "flutter" => "pubspec.yaml",
+            _ => "Cargo.toml",
         });
         let version = read_manifest_version(&manifest);
 
@@ -69,6 +75,21 @@ impl Project {
         } else if self.language.to_lowercase() == "rust" {
             let result = Command::new("cargo")
                 .arg("new")
+                .arg(self.name.to_lowercase())
+                .output()
+                .map_err(|e| ProjectCreationError(e.to_string()))?;
+
+            if result.status.success() {
+                println!("Project created successfully at {:?}", self.path);
+                self.create_marker()?;
+            } else {
+                return Err(ProjectCreationError(
+                    String::from_utf8_lossy(&result.stderr).to_string(),
+                ));
+            }
+        } else if self.language.to_lowercase() == "flutter" {
+            let result = Command::new("flutter")
+                .arg("create")
                 .arg(self.name.to_lowercase())
                 .output()
                 .map_err(|e| ProjectCreationError(e.to_string()))?;
