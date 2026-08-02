@@ -12,6 +12,7 @@ const COMMANDS: &[(&str, &str)] = &[
     ("build", "Build the Flutter app for a platform"),
     ("help", "Show this help message"),
     ("exit", "Exit the shell"),
+    ("clear", "Clear the screen"),
 ];
 
 pub fn command_handler(command: &str) -> Result<()> {

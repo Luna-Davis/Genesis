@@ -33,8 +33,11 @@ pub fn shell() {
 
         match command {
             "exit" | "quit" => break,
+            "clear" => print!("\x1b[2J\x1b[H"),
             _ => {
-                let _ = command_handler(&command);
+                if let Err(e) = command_handler(&command) {
+                    eprintln!("{e}");
+                }
             }
         }
     }
