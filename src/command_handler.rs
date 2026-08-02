@@ -25,7 +25,7 @@ pub fn command_handler(command: &str) -> Result<()> {
         "dev" => dev_project(&current_marker()?)?,
         "build" => build_project(&current_marker()?)?,
         "help" => show_help(),
-        _ => return Err(anyhow!("Command not supported")),
+        _ => return Err(anyhow!("Command '{command}' is not valid. Use 'help' to see available commands")),
     }
     Ok(())
 }

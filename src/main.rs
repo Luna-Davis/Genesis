@@ -1,9 +1,9 @@
 mod command_handler;
-mod commands;
 mod errors;
 mod marker;
 mod projects;
 mod shell;
+mod commands;
 
 use anyhow::Result;
 use clap::Command;
