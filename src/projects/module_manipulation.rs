@@ -3,8 +3,11 @@ use walkdir::WalkDir;
 
 use std::ffi::OsStr;
 use std::fs::{DirBuilder, remove_dir_all};
-use std::path::{PathBuf, absolute};
+use std::path::PathBuf;
 use std::sync::LazyLock;
+
+use crate::errors::ModuleManagementErrors;
+use crate::errors::ModuleManagementErrors::{ModuleNotFound, OperationNotSupported};
 
 struct ModuleManager {
     module_name: String,
@@ -15,17 +18,21 @@ impl ModuleManager {
         Self { module_name }
     }
 
-    fn create(&self) {
+    fn create(&self) -> Result<(), ModuleManagementErrors> {
         // Creates a file in the location
-        match self.location_handler(Some("create")) {
-            Some(location) => DirBuilder::new().recursive(true).create(location).unwrap(),
-            None => println!("Internal Error: Could not get file location"),
+        match self.location_handler(Some("create"))? {
+            Some(location) => {
+                DirBuilder::new().recursive(true).create(location).unwrap();
+                println!("{} created successfully!", &self.module_name);
+            }
+            None => return Err(ModuleNotFound),
         }
+        Ok(())
     }
 
-    fn delete(&self) {
+    fn delete(&self) -> Result<(), ModuleManagementErrors> {
         // Deletes a file in the location
-        match self.location_handler(Some("delete")) {
+        match self.location_handler(Some("delete"))? {
             Some(location) => {
                 println!(
                     "Warning: Make sure the {} doesn't have anything important. Process irreversible.",
@@ -33,28 +40,32 @@ impl ModuleManager {
                 );
                 if Confirm::new().with_prompt("Proceed").interact().unwrap() {
                     let _ = remove_dir_all(location);
+                    println!("{} deleted successfully!", &self.module_name);
                 } else {
-                    std::process::exit(1);
+                    println!("Process Aborted");
                 }
             }
-            None => println!("Internal Error: Could not get file location"),
+            None => return Err(ModuleNotFound),
         }
+        Ok(())
     }
 
-    fn location_handler(&self, operation: Option<&str>) -> Option<PathBuf> {
+    fn location_handler(
+        &self,
+        operation: Option<&str>,
+    ) -> Result<Option<PathBuf>, ModuleManagementErrors> {
+        // Returns the location of the module
         match operation {
             Some("create") => {
-                let current_dir = std::env::current_dir().unwrap();
-                let parent = current_dir
-                    .parent()
-                    .ok_or_else(|| anyhow::anyhow!("current directory has no parent"))
-                    .unwrap();
-                let parent = absolute(parent).unwrap();
-                let src_dir = parent.join("src");
-                let module_location = src_dir.join(&self.module_name);
-                return Some(module_location);
+                let project_dir = std::env::current_dir().unwrap();
+                let src_dir = project_dir.join("src");
+                let module_location = src_dir.join(&self.module_name); // Appends the module folder
+                // to source folder
+                return Ok(Some(module_location)); // return the module path 
             }
             Some("delete") => {
+                // Searches for the module name in the current directory (Assumption that the tool
+                // will be run inside a Genesis project)
                 let current_dir = std::env::current_dir().unwrap();
                 let walker = WalkDir::new(current_dir)
                     .max_depth(3)
@@ -65,6 +76,8 @@ impl ModuleManager {
                             && e.file_name() != ".venv"
                     });
 
+                // Walks through the directory filtering only directories and compares the names to
+                // the module name and returns the path if found
                 for entry in walker {
                     let entry = entry.unwrap();
                     let name = if entry.path().is_dir() {
@@ -74,13 +87,15 @@ impl ModuleManager {
                     };
 
                     if name.to_string_lossy() == self.module_name.as_str() {
-                        return Some(entry.path().to_path_buf());
+                        return Ok(Some(entry.path().to_path_buf()));
+                    } else {
+                        continue;
                     }
                 }
-                None
+                return Err(ModuleNotFound);
             }
-            Some(_) => return None,
-            None => return None,
+            Some(_) => return Err(OperationNotSupported),
+            None => return Err(OperationNotSupported),
         }
     }
 }
@@ -88,7 +103,7 @@ impl ModuleManager {
 static OPTIONS: LazyLock<Vec<String>> =
     LazyLock::new(|| vec!["Create".to_string(), "Delete".to_string()]);
 
-pub fn module_handler() {
+pub fn module_handler() -> Result<(), ModuleManagementErrors> {
     let module_name: String = Input::new()
         .with_prompt("Enter Module Name")
         .interact_text()
@@ -104,6 +119,6 @@ pub fn module_handler() {
     match OPTIONS[option].as_str() {
         "Create" => module.create(),
         "Delete" => module.delete(),
-        _ => {}
+        _ => return Err(OperationNotSupported),
     }
 }

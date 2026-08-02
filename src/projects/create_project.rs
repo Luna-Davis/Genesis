@@ -7,6 +7,8 @@ use std::{
 use dialoguer::{Confirm, Input, Select};
 use dirs;
 
+use crate::errors::CreationErrors::{self, LanguageNotSupported, ProjectCreationError};
+
 static LANGUAGES: LazyLock<Vec<String>> =
     LazyLock::new(|| vec!["Rust".to_string(), "Python".to_string()]);
 
@@ -25,7 +27,7 @@ impl Project {
         }
     }
 
-    fn create(&self) {
+    fn create(&self) -> Result<(), CreationErrors> {
         if self.language.to_lowercase() == "python" {
             let result = Command::new("uv")
                 .arg("init")
@@ -36,25 +38,28 @@ impl Project {
             if result.status.success() {
                 println!("Project created successfully");
             } else {
-                println!("Project not created!");
-                std::process::exit(1);
+                return Err(ProjectCreationError(
+                    String::from_utf8_lossy(&result.stderr).to_string(),
+                ));
             }
-        } else if self.language.to_lowercase() == "Rust" {
+        } else if self.language.to_lowercase() == "rust" {
             let result = Command::new("cargo")
                 .arg("new")
                 .arg(self.name.to_lowercase())
                 .output()
-                .expect("Could not execute the creation command");
+                .map_err(|e| ProjectCreationError(e.to_string()))?;
 
             if result.status.success() {
-                println!("Project created successfully");
+                println!("Project created successfully at {:?}", self.path);
             } else {
-                println!("Project not created!");
-                std::process::exit(1);
+                return Err(ProjectCreationError(
+                    String::from_utf8_lossy(&result.stderr).to_string(),
+                ));
             }
         } else {
-            println!("Language not supported (for now)!");
+            return Err(LanguageNotSupported);
         }
+        Ok(())
     }
 }
 
@@ -77,7 +82,11 @@ pub fn create_project() {
         .interact_text()
         .unwrap();
 
-    let project = Project::new(project_name, language.to_string(), Path::new(&path));
+    let project = Project::new(
+        project_name,
+        LANGUAGES[language].to_string(),
+        Path::new(&path),
+    );
 
     let confirmation = Confirm::new()
         .with_prompt("Do you want to create project?")
@@ -85,9 +94,8 @@ pub fn create_project() {
         .unwrap();
 
     if confirmation {
-        project.create();
+        let _ = project.create(); // Don't require the output
     } else {
         println!("Exiting...");
-        std::process::exit(0);
     }
 }

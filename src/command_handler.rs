@@ -1,23 +1,22 @@
-use crate::projects::{create_project, file_handler, initialize_project, module_handler};
+use anyhow::{Result, anyhow};
+
+use crate::projects::{file_handler, module_handler};
 
 const COMMANDS: &[(&str, &str)] = &[
-    ("new", "Create a new project"),
-    ("init", "Initialize an existing project"),
     ("module", "Manage modules"),
     ("file", "Manage files"),
     ("help", "Show this help message"),
 ];
 
-pub fn command_handler(command: &str) {
+pub fn command_handler(command: &str) -> Result<()> {
     // Handles a command entered and matches it to the expected function
     match command {
-        "new" => create_project(),
-        "init" => initialize_project().expect("Could not initialize project"),
-        "module" => module_handler(),
-        "file" => file_handler(),
+        "module" => module_handler()?,
+        "file" => file_handler()?,
         "help" => show_help(),
-        _ => println!("Command not supported"),
+        _ => return Err(anyhow!("Command not supported")),
     }
+    Ok(())
 }
 
 fn show_help() {

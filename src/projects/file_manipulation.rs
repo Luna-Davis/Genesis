@@ -2,8 +2,11 @@ use dialoguer::{Input, Select};
 use walkdir::WalkDir;
 
 use std::fs::{File, remove_file};
-use std::path::{PathBuf, absolute};
+use std::path::PathBuf;
 use std::sync::LazyLock;
+
+use crate::errors::FileManagementErrors;
+use crate::errors::FileManagementErrors::{FileNotFound, OperationNotSupported};
 
 struct FileManager {
     file_name: String,
@@ -14,38 +17,42 @@ impl FileManager {
         Self { file_name }
     }
 
-    fn create(&self) {
+    fn create(&self) -> Result<(), FileManagementErrors> {
         // Creates a file in the location
-        match self.location_handler(Some("create")) {
+        match self.location_handler(Some("create"))? {
             Some(location) => {
                 let _ = File::create(location);
+                println!("{} created successfully!", &self.file_name);
             }
-            None => println!("Internal Error: Could not get file location"),
+            _ => return Err(FileNotFound),
         }
+        Ok(())
     }
 
-    fn delete(&self) {
+    fn delete(&self) -> Result<(), FileManagementErrors> {
         // Deletes a file in the location
-        match self.location_handler(Some("delete")) {
+        match self.location_handler(Some("delete"))? {
             Some(location) => {
                 let _ = remove_file(location);
+                println!("{} deleted successfully!", &self.file_name);
             }
-            None => println!("Internal Error: Could not get file location"),
+            _ => return Err(FileNotFound),
         }
+        Ok(())
     }
 
-    fn location_handler(&self, operation: Option<&str>) -> Option<PathBuf> {
+    fn location_handler(
+        &self,
+        operation: Option<&str>,
+    ) -> Result<Option<PathBuf>, FileManagementErrors> {
+        // Gets an operation to perform on a file
         match operation {
+            // Creates a file
             Some("create") => {
-                let current_dir = std::env::current_dir().unwrap();
-                let parent = current_dir
-                    .parent()
-                    .ok_or_else(|| anyhow::anyhow!("current directory has no parent"))
-                    .unwrap();
-                let parent = absolute(parent).unwrap();
-                let src_dir = parent.join("src");
+                let project_dir = std::env::current_dir().unwrap();
+                let src_dir = project_dir.join("src");
                 let file_location = src_dir.join(&self.file_name);
-                return Some(file_location);
+                return Ok(Some(file_location));
             }
             Some("delete") => {
                 let current_dir = std::env::current_dir().unwrap();
@@ -63,13 +70,13 @@ impl FileManager {
                     let name = entry.file_name();
 
                     if name.to_string_lossy() == self.file_name.as_str() {
-                        return Some(entry.path().to_path_buf());
+                        return Ok(Some(entry.path().to_path_buf()));
                     }
                 }
-                None
+                return Ok(None);
             }
-            Some(_) => return None,
-            None => return None,
+            Some(_) => return Err(OperationNotSupported),
+            None => return Ok(None),
         }
     }
 }
@@ -77,7 +84,7 @@ impl FileManager {
 static OPTIONS: LazyLock<Vec<String>> =
     LazyLock::new(|| vec!["Create".to_string(), "Delete".to_string()]);
 
-pub fn file_handler() {
+pub fn file_handler() -> Result<(), FileManagementErrors> {
     let file_name: String = Input::new()
         .with_prompt("Enter File Name")
         .interact_text()
@@ -93,6 +100,6 @@ pub fn file_handler() {
     match OPTIONS[option].as_str() {
         "Create" => file.create(),
         "Delete" => file.delete(),
-        _ => {}
+        _ => return Err(OperationNotSupported),
     }
 }
