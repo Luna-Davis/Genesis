@@ -38,3 +38,21 @@ pub enum ModuleManagementErrors {
     #[error("Operation Not supported")]
     OperationNotSupported,
 }
+
+#[derive(Error, Debug)]
+pub enum MarkerErrors {
+    #[error("Directory is not a Genesis project: missing {0}")]
+    NotAGenesisProject(String),
+
+    #[error("Marker file belongs to a different tool: expected '{0}'")]
+    WrongTool(String),
+
+    #[error("Unsupported schema version {0}. Expected {1}")]
+    UnsupportedSchemaVersion(u32, u32),
+
+    #[error("IO error: {0}")]
+    IoError(#[from] std::io::Error),
+
+    #[error("Serde JSON error: {0}")]
+    SerdeJsonError(#[from] serde_json::Error),
+}
