@@ -16,14 +16,26 @@ pub fn shell() {
     }
 
     loop {
+        print!("> ");
         io::stdout().flush().unwrap();
 
         let mut input = String::new();
-        io::stdin()
-            .read_line(&mut input)
-            .expect("Could not read input.");
+        match io::stdin().read_line(&mut input) {
+            Ok(0) => break,
+            Ok(_) => {}
+            Err(_) => break,
+        }
 
         let command = input.trim();
-        let _ = command_handler(&command);
+        if command.is_empty() {
+            continue;
+        }
+
+        match command {
+            "exit" | "quit" => break,
+            _ => {
+                let _ = command_handler(&command);
+            }
+        }
     }
 }
