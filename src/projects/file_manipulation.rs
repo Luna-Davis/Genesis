@@ -63,6 +63,7 @@ impl FileManager {
                         e.file_name() != "target"
                             && e.file_name() != ".git"
                             && e.file_name() != ".venv"
+                            && e.file_name() != "node_modules"
                     });
 
                 for entry in walker {

@@ -1,6 +1,4 @@
-use std::{
-    path::{Path, PathBuf, absolute},
-};
+use std::path::{Path, PathBuf, absolute};
 
 use dialoguer::{Input, Select};
 use walkdir::WalkDir;
@@ -33,6 +31,7 @@ pub fn initialize_project() -> Result<(), InitializationErrors> {
             Some("Cargo.toml") => detected = Some(("rust", entry.path().to_path_buf())),
             Some("pyproject.toml") => detected = Some(("python", entry.path().to_path_buf())),
             Some("pubspec.yaml") => detected = Some(("flutter", entry.path().to_path_buf())),
+            Some("package.json") => detected = Some(("javascript", entry.path().to_path_buf())),
             _ => {}
         }
     }
@@ -41,7 +40,7 @@ pub fn initialize_project() -> Result<(), InitializationErrors> {
         Some((lang, manifest)) => (lang.to_string(), Some(manifest)),
         None => {
             // No manifest found, ask the user which language the project uses
-            let languages = ["Rust", "Python", "Flutter"];
+            let languages = ["Rust", "Python", "Flutter", "JavaScript"];
             let selection = Select::new()
                 .with_prompt("No project manifest detected. Select project language")
                 .items(&languages)

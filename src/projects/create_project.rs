@@ -15,6 +15,7 @@ static LANGUAGES: LazyLock<Vec<String>> = LazyLock::new(|| {
         "Rust".to_string(),
         "Python".to_string(),
         "Flutter".to_string(),
+        "JavaScript".to_string(),
     ]
 });
 
@@ -43,7 +44,9 @@ impl Project {
         let manifest = project_dir.join(match language.as_str() {
             "python" => "pyproject.toml",
             "flutter" => "pubspec.yaml",
-            _ => "Cargo.toml",
+            "javascript" => "package.json",
+            "rust" => "Cargo.toml",
+            _ => "",
         });
         let version = read_manifest_version(&manifest);
 
@@ -101,6 +104,30 @@ impl Project {
                 return Err(ProjectCreationError(
                     String::from_utf8_lossy(&result.stderr).to_string(),
                 ));
+            }
+        } else if self.language.to_lowercase() == "javascript" {
+            println!("Warning: Using Expo React Framework for project!");
+            let confirmation = Confirm::new().with_prompt("Proceed?").interact().unwrap();
+
+            if !confirmation {
+                println!("Aborting build with react");
+                return Ok(());
+            } else {
+                let result = Command::new("npx")
+                    .arg("create-expo-app@latest")
+                    .arg(self.name.to_lowercase())
+                    .arg("--yes")
+                    .output()
+                    .map_err(|e| ProjectCreationError(e.to_string()))?;
+
+                if result.status.success() {
+                    println!("Project created successfully at {:?}", self.path);
+                    self.create_marker()?;
+                } else {
+                    return Err(ProjectCreationError(
+                        String::from_utf8_lossy(&result.stderr).to_string(),
+                    ));
+                }
             }
         } else {
             return Err(LanguageNotSupported);

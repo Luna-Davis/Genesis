@@ -1,9 +1,9 @@
 mod command_handler;
+mod commands;
 mod errors;
 mod marker;
 mod projects;
 mod shell;
-mod commands;
 
 use anyhow::Result;
 use clap::Command;
@@ -16,7 +16,7 @@ use shell::shell;
 fn main() -> Result<(), InitializationErrors> {
     let matches = Command::new("Genesis")
         .author("Mr. Lunatic")
-        .version("1.0.0")
+        .version("1.0.1")
         .about("Project Manager")
         .subcommand(Command::new("new").about("Create new projects"))
         .subcommand(Command::new("init").about("Initialize an existing project"))

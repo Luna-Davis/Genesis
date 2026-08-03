@@ -1,13 +1,13 @@
 // Project commands shared between the CLI and the shell
 //
 // run/test are available for every supported language and dispatch to the
-// native tool of the project (cargo / uv / flutter). dev/build are
+// native tool of the project (cargo / uv / flutter / npm). dev/build are
 // Flutter-only: dev runs the app for preview, build asks for a target
 // platform and builds the app for it.
 
 use std::process::Command;
 
-use anyhow::{anyhow, Result, bail};
+use anyhow::{Result, anyhow, bail};
 use dialoguer::Select;
 
 use crate::errors::MarkerErrors;
@@ -28,6 +28,7 @@ pub fn run_project(marker: &GenesisMarker) -> Result<()> {
         "rust" => ("cargo", vec!["run"]),
         "python" => ("uv", vec!["run"]),
         "flutter" => ("flutter", vec!["run"]),
+        "javascript" => ("npm", vec!["expo", "start"]),
         other => bail!("No run command for language '{other}'"),
     };
     exec(tool, &args)
@@ -59,7 +60,13 @@ pub fn build_project(marker: &GenesisMarker) -> Result<()> {
     }
 
     let platforms = [
-        "apk", "appbundle", "web", "linux", "windows", "macos", "ios",
+        "apk",
+        "appbundle",
+        "web",
+        "linux",
+        "windows",
+        "macos",
+        "ios",
     ];
     let selection = Select::new()
         .with_prompt("Select Platform")
@@ -77,7 +84,11 @@ fn exec(tool: &str, args: &[&str]) -> Result<()> {
         .map_err(|e| anyhow!("Could not run '{tool}': {e}"))?;
 
     if !status.success() {
-        bail!("'{tool} {}' failed with exit code {:?}", args.join(" "), status.code());
+        bail!(
+            "'{tool} {}' failed with exit code {:?}",
+            args.join(" "),
+            status.code()
+        );
     }
     Ok(())
 }
