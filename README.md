@@ -1,6 +1,6 @@
 # Genesis - Project Manager
 
-Genesis is a project manager built for my specific workflow with Python, Rust and Flutter. I contains three terminal commands
+Genesis is a project manager built for my specific workflow with Python, Rust, Flutter and JavaScript. I contains three terminal commands
 `new`, `init`, and `shell`. These work together for the efficient management of a project.
 
 ## Features
